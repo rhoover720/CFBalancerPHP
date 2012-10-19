@@ -4,17 +4,17 @@ class CFBalancerPHP {
 	 * Change these as necessary, however we do not recommend running the CFBalance daemon on a remote PC,
 	 * as it will report invalid statistics for the local node's CPU / bandwidth utilization.
 	 */
-	private const WEBSERVICE_HOST = "localhost";
-	private const WEBSERVICE_PORT = 44444;
+	const WEBSERVICE_HOST = "localhost";
+	const WEBSERVICE_PORT = 44444;
 	
 	// Stores the rolling debug log for timing purposes
-	private string $debugLog;
+	private $debugLog;
 	
 	// Emergency variable. True if this function is defunct and should not be used.
-	private int $dead;
+	private $dead;
 	
 	// For performance-tracking
-	private int $timer;
+	private $timer;
 		
 	/** This initializes the CFBalancerPHP class.
 	 *	We also initialize the $timer variable here as well so we can debug print every step of the way,
@@ -29,11 +29,11 @@ class CFBalancerPHP {
 	 */
 	public function getNodeList() {
 		if ($dead) {
-			$this->debug(__FUNCTION__)
+			$this->debug(__FUNCTION__);
 			return null;
 		}
-		resource $handle = $this->openWebService();
-		string $nodeListRaw = null;
+		$handle = $this->openWebService();
+		$nodeListRaw = null;
 		
 		// FIXME: add timing code here as well to ensure that the socket never hangs for more than 15ms
 		// if it does hang, debug print, and mark us as dead, and return null.
@@ -45,7 +45,7 @@ class CFBalancerPHP {
 		while (!stream_get_meta_data($fp)['timed_out']) {
 			fwrite($handle, "L");
 			while (!feof($handle)) {
-				$nodeListRaw .= fread($handle, 128)
+				$nodeListRaw .= fread($handle, 128);
 			}
 			$this->debug("Got NodeList in raw form from server.");
 			//process raw nodelist into array
@@ -78,7 +78,7 @@ class CFBalancerPHP {
 	 */
 	public function checkAndRedirect($postfix) {
 		if ($dead) {
-			$this->debug(__FUNCTION__)
+			$this->debug(__FUNCTION__);
 			return null;
 		}
 		
@@ -91,7 +91,7 @@ class CFBalancerPHP {
 	 */
 	public function getRedirectNode() {
 		if ($dead) {
-			$this->debug(__FUNCTION__)
+			$this->debug(__FUNCTION__);
 			return null;
 		}
 		
@@ -120,9 +120,9 @@ class CFBalancerPHP {
 	 */
 	private function debug($text) {
 		if ($dead) {
-			$debugLog .= "[ "microtime(true) - $timer"ms ] DEAD! - ".$text." was called. Ignoring. /r/n";
+			$debugLog .= "[ ".microtime(true) - $timer."ms ] DEAD! - ".$text." was called. Ignoring. /r/n";
 		} else if (DEBUG) {
-			$debugLog .= "[ "microtime(true) - $timer"ms ] ".$text."/r/n";
+			$debugLog .= "[ ".microtime(true) - $timer."ms ] ".$text."/r/n";
 		}
 	}
 	
