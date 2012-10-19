@@ -44,7 +44,7 @@ class CFBalancerPHP {
 		// also, need to fix stream_meta_data, as in PHP 5.3 and below
 		// we cannot access arrays directly from a function. (this requires a new sub to be created.)
 		
-		while (!stream_get_meta_data($fp)['timed_out']) {
+		while (!stream_get_meta_data($fp) == $var['timed_out']) {
 			fwrite($handle, "L");
 			while (!feof($handle)) {
 				$nodeListRaw .= fread($handle, 128);
@@ -62,7 +62,7 @@ class CFBalancerPHP {
 	/** Processes the raw nodelist, into an array
 	 * 	@returns $nodeListArray
 	 */
-	public function processNodeList($raw) {
+	private function processNodeList($raw) {
 		//need to add error handing for null NodeList
 		$lines = explode("\r\n",$raw);
 		//breaks up raw data by the carriage returns into an array by 
