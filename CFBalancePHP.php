@@ -15,9 +15,7 @@ class CFBalancerPHP {
 	
 	// For performance-tracking
 	private int $timer;
-	
-	
-	
+		
 	/** This initializes the CFBalancerPHP class.
 	 *	We also initialize the $timer variable here as well so we can debug print every step of the way,
 	 *	so we can tell if something hangs, or if something takes longer than usual to execute.
@@ -39,17 +37,39 @@ class CFBalancerPHP {
 		
 		// FIXME: add timing code here as well to ensure that the socket never hangs for more than 15ms
 		// if it does hang, debug print, and mark us as dead, and return null.
-		
+			
 		// Ask for webservice to list servers.
-		fwrite($handle, "L");
-		while (!feof($handle)) {
-			$nodeListRaw .= fread($handle, 128)
+		// need to set timeout then make
+		//  stream_set_blocking($handle, FALSE) 
+		
+		while (!stream_get_meta_data($fp)['timed_out']) {
+			fwrite($handle, "L");
+			while (!feof($handle)) {
+				$nodeListRaw .= fread($handle, 128)
+			}
+			$this->debug("Got NodeList in raw form from server.");
+			//process raw nodelist into array
+			return $this->processNodeList($nodeListRaw);
 		}
-		$this->debug("Got NodeList in raw form from server.");
-		
-		// Split the nodeListRaw into parts.
-		
-		
+		//we're dead!
+		$this->debug(__FUNCTION__ . " failed, connection timed out. dying.");
+		$dead = True;
+		return null;
+	}
+
+	/** Processes the raw nodelist, into an array
+	 * 	@returns $nodeListArray
+	 */
+	public function processNodeList($raw) {
+		//need to add error handing for null NodeList
+		$lines = explode("\r\n",$raw);
+		//breaks up raw data by the carriage returns into an array by 
+		//lines
+		foreach ($lines as $lines) {
+			array_push($nodeList, explode(",",$lines));
+			//then breaks up the line data into an array based on 
+			//the , we use to seperate data
+		}
 		return $nodeList;
 	}
 	
@@ -86,6 +106,13 @@ class CFBalancerPHP {
 	private function openWebservice() {
 		// open web service socket.
 		// if it takes too long, mark us as $dead, and say where we died.
+
+		$fp = fsockopen(WEBSERVICE_HOST, WEBSERVICE_PORT);
+		if(!$fp) {
+			$this->debug(__FUCNTION__ . " failed, setting dead.");
+			$dead = True;
+		}
+		
 		return $webserviceHandle;
 	}
 	
