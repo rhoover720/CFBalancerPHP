@@ -7,49 +7,80 @@ class CFBalancerPHP {
 	const WEBSERVICE_HOST = "localhost";
 	const WEBSERVICE_PORT = 44444;
 	
-	// Stores timeout for the webservice in seconds
+	
+	/* API SPECIFICATION ------------------------------------------------------------
+	 * The variables below are used to configure the API for the web service daemon.
+	 * The expected data should be as follows:
+	 * 0,17.download.codefi.re,1.01,8.72,*
+	 * 0,21.download.codefi.re,0.91,4.78  
+	 * 
+	 * The line marked with an asterisk signifies the localhost performance counters.
+	 * The data will then be split (on the comma) into an array.
+	 * Use the constants below to define the format of this array.
+	 * 
+	 */
+	
+	/** Stores timeout for the webservice in seconds
+	 */
 	const WEBSERVICE_TIMEOUT = 1;
 	
-	// Stores which array index contains the time since last check-in
+	/* Stores which array index contains the time since last check-in
+	 */
 	const WEBSERVICE_API_EXPIRE = 0;
 	
-	// Stores which array index contains the host cname
+	/** Stores which array index contains the host cname
+	 */
 	const WEBSERVICE_API_CNAME = 1;
-	
-	// Stores which array index contains the cpu load
+
+	/** Stores which array index contains the cpu load
+	 */
 	const WEBSERVICE_API_CPULOAD = 2;
 	
-	// Stores which array index contains the net load
+	/* Stores which array index contains the net load
+	 */
 	const WEBSERVICE_API_NETLOAD = 3;
 	
-	// Stores which elements contains localhost signifier
+	/* Stores which elements contains localhost signifier
+	 */
 	const WEBSERVICE_API_LOCALHOST_REF = 4;
 	
-	// Stores the rolling debug log for timing purposes
+	//
+	// END API CONFIG
+	//
+	
+	
+	/** Stores the rolling debug log for timing purposes
+	 */
 	private $debugLog;
 	
-	// Emergency variable. True if this function is defunct and should not be used.
+	/** Emergency variable. True if this function is defunct and should not be used.
+	 */
 	private $dead;
 	
-	// For performance-tracking
+	/** For performance-tracking
+	 */
 	private $timer;
 	
-	// Stores the local node performance counters
+	/** Stores the local node performance counters
+	 */
 	private $localhost;
-		
+	
+	//
+	// END VARIABLE DECLARATIONS
+	//
+	
 	/** This initializes the CFBalancerPHP class.
-	 *	We also initialize the $timer variable here as well so we can debug print every step of the way,
-	 *	so we can tell if something hangs, or if something takes longer than usual to execute.
 	 */
 	public function __construct() {
-		$timer = microtime(true);
+		// Initialize timer value here. This allows for 
+		$this->timer = microtime(true);
 	}
 
 	/** Returns an array of each server in the CFBalancer pool.
-	 *	@returns $nodeList contains the server's internal IP, it's public CNAME, it's CPU load average, and it's current outgoing network rate.
+	 *	@return $nodeList contains the server's internal IP, it's public CNAME, it's CPU load average, and it's current outgoing network rate.
 	 */
 	public function getNodeList() {
-		if ($dead) {
+		if ($this->dead) {
 			$this->debug(__FUNCTION__);
 			return null;
 		}
@@ -69,20 +100,20 @@ class CFBalancerPHP {
 		}
 		//we're dead!
 		$this->debug(__FUNCTION__ . " failed, connection timed out. dying.");
-		$dead = True;
+		$this->dead = True;
 		return null;
 	}
 
 	/** Allows us to access data returned as an array from a function.
 	 * This is a workaround for php5.3 limitation
-	 * @returns $value of $array at $key 
+	 * @return $value of $array at $key 
 	 */
 	private function getArray(array $array, $key) {
 		return $arr[$key];
 	}
 
 	/** Processes the raw nodelist, into an array
-	 * 	@returns $nodeListArray
+	 * 	@return $nodeListArray
 	 */
 	private function processNodeList($raw) {
 		//need to add error handing for null NodeList
@@ -106,7 +137,7 @@ class CFBalancerPHP {
 		}
 		else {
 			$this->debug(__FUNCTION___ . " ERROR: nodeList was null, empty, or not set.");
-			$dead = True;
+			$this->dead = True;
 			return null;
 		}
 	}
@@ -115,7 +146,7 @@ class CFBalancerPHP {
 	 *	@param $postfix	The URL to append to the CNAME to redirect to.
 	 */
 	public function checkAndRedirect($postfix) {
-		if ($dead) {
+		if ($this->dead) {
 			$this->debug(__FUNCTION__);
 			return null;
 		}
@@ -125,10 +156,10 @@ class CFBalancerPHP {
 	}
 	
 	/**	Performs the comparison of servers in the pool to determine the most available node in the pool.
-	 *	@returns $redirCNAME the CNAME of the node that is most available
+	 *	@return $redirCNAME the CNAME of the node that is most available
 	 */
 	public function getRedirectNode() {
-		if ($dead) {
+		if ($this->dead) {
 			$this->debug(__FUNCTION__);
 			return null;
 		}
@@ -140,7 +171,7 @@ class CFBalancerPHP {
 
 	/**	Connects to the webservice port that CFBalancer exposes on localhost.
 	 *	After connecting to the webservice port, it returns a handle (fp) to that connection.
-	 *	@returns $webserviceHandle
+	 *	@return $webserviceHandle
 	 */
 	private function openWebservice() {
 		// open web service socket.
@@ -149,7 +180,7 @@ class CFBalancerPHP {
 		$fp = fsockopen(WEBSERVICE_HOST, WEBSERVICE_PORT);
 		if(!$fp) {
 			$this->debug(__FUCNTION__ . " failed, setting dead.");
-			$dead = True;
+			$this->dead = True;
 		}
 		
 		return $webserviceHandle;
@@ -158,7 +189,7 @@ class CFBalancerPHP {
 	/** Saves debug text along with timing data to a buffer for recall with getDebug() later.
 	 */
 	private function debug($text) {
-		if ($dead) {
+		if ($this->dead) {
 			$debugLog .= "[ ".microtime(true) - $timer."ms ] DEAD! - ".$text." was called. Ignoring. /r/n";
 		} else if (DEBUG) {
 			$debugLog .= "[ ".microtime(true) - $timer."ms ] ".$text."/r/n";
@@ -170,13 +201,13 @@ class CFBalancerPHP {
 	public function debugPrint() {
 		if (DEBUG) {
 			// If debug is set, echo the log
-			echo($debugLog);
-		} else if (!$dead) {
+			echo($this->debugLog);
+		} else if (!$this->dead) {
 			// If the module isn't dead, tell us quickly and shut up.
 			echo("CFBalancePHP: debugging disabled. Nothing to display.");
 		} else {
 			// However, if we're dead, no matter what, print the damn log!
-			echo($debugLog);
+			echo($this->debugLog);
 		}
 	}
 	
