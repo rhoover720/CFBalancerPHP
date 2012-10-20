@@ -41,10 +41,8 @@ class CFBalancerPHP {
 		// Ask for webservice to list servers.
 		// need to set timeout then make
 		//  stream_set_blocking($handle, FALSE) 
-		// also, need to fix stream_meta_data, as in PHP 5.3 and below
-		// we cannot access arrays directly from a function. (this requires a new sub to be created.)
-		
-		while (!stream_get_meta_data($fp)['timed_out']) {
+
+		while (!$this->getArray(stream_get_meta_data($fp),"timed_out")) {
 			fwrite($handle, "L");
 			while (!feof($handle)) {
 				$nodeListRaw .= fread($handle, 128);
@@ -57,6 +55,13 @@ class CFBalancerPHP {
 		$this->debug(__FUNCTION__ . " failed, connection timed out. dying.");
 		$dead = True;
 		return null;
+	}
+
+	/** workaround for php5.3 limitation
+	 * @returns $value of $array at $key 
+	 */
+	private function getArray(array $array, $key) {
+		return $arr[$key];
 	}
 
 	/** Processes the raw nodelist, into an array
