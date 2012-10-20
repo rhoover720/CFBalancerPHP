@@ -40,7 +40,7 @@ class CFBalancerPHP {
 			
 		// Ask for webservice to list servers.
 		// need to set timeout then make
-		//  stream_set_blocking($handle, FALSE) 
+		//  stream_set_timeout
 
 		while (!$this->getArray(stream_get_meta_data($fp),"timed_out")) {
 			fwrite($handle, "L");
@@ -69,11 +69,10 @@ class CFBalancerPHP {
 	 */
 	public function processNodeList($raw) {
 		//need to add error handing for null NodeList
-		if ($raw != NULL) {
+		if ($raw != NULL && isset($raw) && !empty($raw)) {
 			$this->debug("processing raw nodelist that's not null.");
 			$lines = explode("\r\n",$raw);
-			//breaks up raw data by the carriage returns into an array by 
-			//lines
+			//breaks up raw data by the carriage returns into an array by lines
 			foreach ($lines as $lines) {
 				array_push($nodeList, explode(",",$lines));
 				//then breaks up the line data into an array based on 
