@@ -47,7 +47,7 @@ class CFBalancerPHP {
 			while (!feof($handle)) {
 				$nodeListRaw .= fread($handle, 128);
 			}
-			$this->debug("Got NodeList in raw form from server.");
+			$this->debug(__FUNCTION__ . " - Got NodeList in raw form from server.");
 			//process raw nodelist into array
 			return $this->processNodeList($nodeListRaw);
 		}
@@ -57,7 +57,8 @@ class CFBalancerPHP {
 		return null;
 	}
 
-	/** workaround for php5.3 limitation
+	/** Allows us to access data returned as an array from a function.
+	 * This is a workaround for php5.3 limitation
 	 * @returns $value of $array at $key 
 	 */
 	private function getArray(array $array, $key) {
@@ -70,7 +71,7 @@ class CFBalancerPHP {
 	public function processNodeList($raw) {
 		//need to add error handing for null NodeList
 		if ($raw != NULL) {
-			$this->debug("processing raw nodelist that's not null.");
+			$this->debug(__FUNCTION__ . " - Processing non-null nodeList.");
 			$lines = explode("\r\n",$raw);
 			//breaks up raw data by the carriage returns into an array by 
 			//lines
@@ -82,7 +83,7 @@ class CFBalancerPHP {
 			return $nodeList;
 		}
 		else {
-			$this->debug(__FUNCTION___ . " died because of null NodeList.");
+			$this->debug(__FUNCTION___ . " ERROR: nodeList was null, empty, or not set.");
 			$dead = True;
 			return null;
 		}
