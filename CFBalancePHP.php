@@ -106,6 +106,8 @@ class CFBalancerPHP {
 
 	/** Allows us to access data returned as an array from a function.
 	 * This is a workaround for php5.3 limitation
+	 * @var $array The array to operate on
+	 * @var $key The key to return from $array
 	 * @return $value of $array at $key 
 	 */
 	private function getArray(array $array, $key) {
@@ -113,6 +115,7 @@ class CFBalancerPHP {
 	}
 
 	/** Processes the raw nodelist, into an array
+	 *  @param $raw The raw node list in text form
 	 * 	@return $nodeListArray
 	 */
 	private function processNodeList($raw) {
@@ -187,6 +190,7 @@ class CFBalancerPHP {
 	}
 	
 	/** Saves debug text along with timing data to a buffer for recall with getDebug() later.
+	 *  @param $text The text to write to the debug buffer
 	 */
 	private function debug($text) {
 		if ($this->dead) {
