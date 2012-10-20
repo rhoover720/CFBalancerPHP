@@ -1,0 +1,305 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>phpDocumentor » \CFBalancerPHP\CFBalancerPHP</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">phpDocumentor</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu"></ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">2</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul><li>fixme 
+                <span class="label label-info">2</span>
+</li></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">0</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<span class="btn-group visibility" data-toggle="buttons-checkbox"><button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button></span><div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-custom icon-method"></i> Methods
+                    <ul>
+<li class="method public "><a href="#method___construct" title="__construct :: This initializes the CFBalancerPHP class."><span class="description">This initializes the CFBalancerPHP class.</span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#method_checkAndRedirect" title="checkAndRedirect :: Checks the pool of servers, determines the most available node, and redirects the client to the new node."><span class="description">Checks the pool of servers, determines the most available node, and redirects the client to the new node.</span><pre>checkAndRedirect()</pre></a></li>
+<li class="method public "><a href="#method_debugPrint" title="debugPrint :: Prints the debugging buffer."><span class="description">Prints the debugging buffer.</span><pre>debugPrint()</pre></a></li>
+<li class="method public "><a href="#method_getNodeList" title="getNodeList :: Returns an array of each server in the CFBalancer pool."><span class="description">Returns an array of each server in the CFBalancer pool.</span><pre>getNodeList()</pre></a></li>
+<li class="method public "><a href="#method_getRedirectNode" title="getRedirectNode :: Performs the comparison of servers in the pool to determine the most available node in the pool."><span class="description">Performs the comparison of servers in the pool to determine the most available node in the pool.</span><pre>getRedirectNode()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul>
+<li class="method private "><a href="#method_debug" title="debug :: Saves debug text along with timing data to a buffer for recall with getDebug() later."><span class="description">Saves debug text along with timing data to a buffer for recall with getDebug() later.</span><pre>debug()</pre></a></li>
+<li class="method private "><a href="#method_getArray" title="getArray :: Allows us to access data returned as an array from a function."><span class="description">Allows us to access data returned as an array from a function.</span><pre>getArray()</pre></a></li>
+<li class="method private "><a href="#method_openWebservice" title="openWebservice :: Connects to the webservice port that CFBalancer exposes on localhost."><span class="description">Connects to the webservice port that CFBalancer exposes on localhost.</span><pre>openWebservice()</pre></a></li>
+<li class="method private "><a href="#method_processNodeList" title="processNodeList :: Processes the raw nodelist, into an array"><span class="description">Processes the raw nodelist, into an array</span><pre>processNodeList()</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i class="icon-custom icon-property"></i> Properties
+                    <ul></ul>
+</li>
+<li class="nav-header private">» Private
+                    <ul>
+<li class="property private "><a href="#property_dead" title="$dead :: Emergency variable."><span class="description">Emergency variable.</span><pre>$dead</pre></a></li>
+<li class="property private "><a href="#property_debugLog" title="$debugLog :: Stores the rolling debug log for timing purposes"><span class="description">Stores the rolling debug log for timing purposes</span><pre>$debugLog</pre></a></li>
+<li class="property private "><a href="#property_localhost" title="$localhost :: Stores the local node performance counters"><span class="description">Stores the local node performance counters</span><pre>$localhost</pre></a></li>
+<li class="property private "><a href="#property_timer" title="$timer :: For performance-tracking"><span class="description">For performance-tracking</span><pre>$timer</pre></a></li>
+</ul>
+</li>
+<li class="nav-header">
+<i class="icon-custom icon-constant"></i> Constants
+                    <ul>
+<li class="constant  "><a href="#constant_WEBSERVICE_API_CNAME" title="WEBSERVICE_API_CNAME :: Stores which array index contains the host cname"><span class="description">Stores which array index contains the host cname</span><pre>WEBSERVICE_API_CNAME</pre></a></li>
+<li class="constant  "><a href="#constant_WEBSERVICE_API_CPULOAD" title="WEBSERVICE_API_CPULOAD :: Stores which array index contains the cpu load"><span class="description">Stores which array index contains the cpu load</span><pre>WEBSERVICE_API_CPULOAD</pre></a></li>
+<li class="constant  "><a href="#constant_WEBSERVICE_API_EXPIRE" title="WEBSERVICE_API_EXPIRE :: Stores which array index contains the time since last check-in"><span class="description">Stores which array index contains the time since last check-in</span><pre>WEBSERVICE_API_EXPIRE</pre></a></li>
+<li class="constant  "><a href="#constant_WEBSERVICE_API_LOCALHOST_REF" title="WEBSERVICE_API_LOCALHOST_REF :: Stores which elements contains localhost signifier"><span class="description">Stores which elements contains localhost signifier</span><pre>WEBSERVICE_API_LOCALHOST_REF</pre></a></li>
+<li class="constant  "><a href="#constant_WEBSERVICE_API_NETLOAD" title="WEBSERVICE_API_NETLOAD :: Stores which array index contains the net load"><span class="description">Stores which array index contains the net load</span><pre>WEBSERVICE_API_NETLOAD</pre></a></li>
+<li class="constant  "><a href="#constant_WEBSERVICE_HOST" title="WEBSERVICE_HOST :: Webservice daemon hostname."><span class="description">Webservice daemon hostname.</span><pre>WEBSERVICE_HOST</pre></a></li>
+<li class="constant  "><a href="#constant_WEBSERVICE_PORT" title="WEBSERVICE_PORT :: Webservice daemon port
+Change this to the port that you are running the service on"><span class="description">Webservice daemon port
+Change this to the port that you are running the service on</span><pre>WEBSERVICE_PORT</pre></a></li>
+<li class="constant  "><a href="#constant_WEBSERVICE_TIMEOUT" title="WEBSERVICE_TIMEOUT :: Stores timeout for the webservice in seconds"><span class="description">Stores timeout for the webservice in seconds</span><pre>WEBSERVICE_TIMEOUT</pre></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="span8">
+<a id="\CFBalancerPHP\CFBalancerPHP"></a><ul class="breadcrumb">
+<li>
+<a href="../index.html"><i class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li><a href="../namespaces/CFBalancerPHP.html">CFBalancerPHP</a></li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/CFBalancerPHP.CFBalancerPHP.html">CFBalancerPHP</a>
+</li>
+</ul>
+<div class="element class"><div class="details">
+<h3>
+<i class="icon-custom icon-method"></i> Methods</h3>
+<a id="method___construct"></a><div class="element clickable method public method___construct" data-toggle="collapse" data-target=".method___construct .collapse">
+<h2>This initializes the CFBalancerPHP class.</h2>
+<pre>__construct() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_checkAndRedirect"></a><div class="element clickable method public method_checkAndRedirect" data-toggle="collapse" data-target=".method_checkAndRedirect .collapse">
+<h2>Checks the pool of servers, determines the most available node, and redirects the client to the new node.</h2>
+<pre>checkAndRedirect(string $postfix) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>Uses a "Location:" header to accomplish the transfer.</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$postfix</h4>
+<code>string</code><p>The URL to append to the CNAME to redirect to.</p></div>
+</div></div>
+</div>
+<a id="method_debugPrint"></a><div class="element clickable method public method_debugPrint" data-toggle="collapse" data-target=".method_debugPrint .collapse">
+<h2>Prints the debugging buffer.</h2>
+<pre>debugPrint() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="method_getNodeList"></a><div class="element clickable method public method_getNodeList" data-toggle="collapse" data-target=".method_getNodeList .collapse">
+<h2>Returns an array of each server in the CFBalancer pool.</h2>
+<pre>getNodeList() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>contains the server's internal IP, it's public CNAME, it's CPU load average, and it's current outgoing network rate.</div>
+</div></div>
+</div>
+<a id="method_getRedirectNode"></a><div class="element clickable method public method_getRedirectNode" data-toggle="collapse" data-target=".method_getRedirectNode .collapse">
+<h2>Performs the comparison of servers in the pool to determine the most available node in the pool.</h2>
+<pre>getRedirectNode() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>the CNAME of the node that is most available</div>
+</div></div>
+</div>
+<a id="method_debug"></a><div class="element clickable method private method_debug" data-toggle="collapse" data-target=".method_debug .collapse">
+<h2>Saves debug text along with timing data to a buffer for recall with getDebug() later.</h2>
+<pre>debug(string $text) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$text</h4>
+<code>string</code><p>The text to write to the debug buffer</p></div>
+</div></div>
+</div>
+<a id="method_getArray"></a><div class="element clickable method private method_getArray" data-toggle="collapse" data-target=".method_getArray .collapse">
+<h2>Allows us to access data returned as an array from a function.</h2>
+<pre>getArray(array $array, string $key) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>This is a workaround for php5.3 limitation</p></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$array</h4>
+<code>array</code><p>The array to operate on</p></div>
+<div class="subelement argument">
+<h4>$key</h4>
+<code>string</code><p>The key to return from $array</p>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>value of $array at $key</div>
+</div></div>
+</div>
+<a id="method_openWebservice"></a><div class="element clickable method private method_openWebservice" data-toggle="collapse" data-target=".method_openWebservice .collapse">
+<h2>Connects to the webservice port that CFBalancer exposes on localhost.</h2>
+<pre>openWebservice() : resource</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"><p>After connecting to the webservice port, it returns a handle (fp) to that connection.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>resource</code>a handle to the now-open webservice</div>
+</div></div>
+</div>
+<a id="method_processNodeList"></a><div class="element clickable method private method_processNodeList" data-toggle="collapse" data-target=".method_processNodeList .collapse">
+<h2>Processes the raw nodelist, into an array</h2>
+<pre>processNodeList(string $raw) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<div class="long_description"></div>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$raw</h4>
+<code>string</code><p>The raw node list in text form</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>Array of nodes other than localhost</div>
+</div></div>
+</div>
+<h3>
+<i class="icon-custom icon-property"></i> Properties</h3>
+<a id="property_dead"> </a><div class="element clickable property private property_dead" data-toggle="collapse" data-target=".property_dead .collapse">
+<h2>Emergency variable.</h2>
+<pre>$dead </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>True if this function is defunct and should not be used.</p></div></div></div>
+</div>
+<a id="property_debugLog"> </a><div class="element clickable property private property_debugLog" data-toggle="collapse" data-target=".property_debugLog .collapse">
+<h2>Stores the rolling debug log for timing purposes</h2>
+<pre>$debugLog </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_localhost"> </a><div class="element clickable property private property_localhost" data-toggle="collapse" data-target=".property_localhost .collapse">
+<h2>Stores the local node performance counters</h2>
+<pre>$localhost </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="property_timer"> </a><div class="element clickable property private property_timer" data-toggle="collapse" data-target=".property_timer .collapse">
+<h2>For performance-tracking</h2>
+<pre>$timer </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<h3>
+<i class="icon-custom icon-constant"></i> Constants</h3>
+<a id="constant_WEBSERVICE_API_CNAME"> </a><div class="element clickable constant  constant_WEBSERVICE_API_CNAME" data-toggle="collapse" data-target=".constant_WEBSERVICE_API_CNAME .collapse">
+<h2>Stores which array index contains the host cname</h2>
+<pre>WEBSERVICE_API_CNAME </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_WEBSERVICE_API_CPULOAD"> </a><div class="element clickable constant  constant_WEBSERVICE_API_CPULOAD" data-toggle="collapse" data-target=".constant_WEBSERVICE_API_CPULOAD .collapse">
+<h2>Stores which array index contains the cpu load</h2>
+<pre>WEBSERVICE_API_CPULOAD </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_WEBSERVICE_API_EXPIRE"> </a><div class="element clickable constant  constant_WEBSERVICE_API_EXPIRE" data-toggle="collapse" data-target=".constant_WEBSERVICE_API_EXPIRE .collapse">
+<h2>Stores which array index contains the time since last check-in</h2>
+<pre>WEBSERVICE_API_EXPIRE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_WEBSERVICE_API_LOCALHOST_REF"> </a><div class="element clickable constant  constant_WEBSERVICE_API_LOCALHOST_REF" data-toggle="collapse" data-target=".constant_WEBSERVICE_API_LOCALHOST_REF .collapse">
+<h2>Stores which elements contains localhost signifier</h2>
+<pre>WEBSERVICE_API_LOCALHOST_REF </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_WEBSERVICE_API_NETLOAD"> </a><div class="element clickable constant  constant_WEBSERVICE_API_NETLOAD" data-toggle="collapse" data-target=".constant_WEBSERVICE_API_NETLOAD .collapse">
+<h2>Stores which array index contains the net load</h2>
+<pre>WEBSERVICE_API_NETLOAD </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_WEBSERVICE_HOST"> </a><div class="element clickable constant  constant_WEBSERVICE_HOST" data-toggle="collapse" data-target=".constant_WEBSERVICE_HOST .collapse">
+<h2>Webservice daemon hostname.</h2>
+<pre>WEBSERVICE_HOST </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"><p>This should be localhost under most cases. Running the service on a remove machine will
+skew the results and cause the load calculation to fail.</p></div></div></div>
+</div>
+<a id="constant_WEBSERVICE_PORT"> </a><div class="element clickable constant  constant_WEBSERVICE_PORT" data-toggle="collapse" data-target=".constant_WEBSERVICE_PORT .collapse">
+<h2>Webservice daemon port
+Change this to the port that you are running the service on</h2>
+<pre>WEBSERVICE_PORT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+<a id="constant_WEBSERVICE_TIMEOUT"> </a><div class="element clickable constant  constant_WEBSERVICE_TIMEOUT" data-toggle="collapse" data-target=".constant_WEBSERVICE_TIMEOUT .collapse">
+<h2>Stores timeout for the webservice in seconds</h2>
+<pre>WEBSERVICE_TIMEOUT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
+</div>
+</div></div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a10</a> and<br>
+            generated on 2012-10-20T13:23:47-07:00.<br></footer></div>
+</div>
+</body>
+</html>

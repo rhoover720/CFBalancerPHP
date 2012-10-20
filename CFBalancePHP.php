@@ -1,10 +1,21 @@
 <?php
+namespace CFBalancerPHP;
 class CFBalancerPHP {
-	/* 
-	 * Change these as necessary, however we do not recommend running the CFBalance daemon on a remote PC,
-	 * as it will report invalid statistics for the local node's CPU / bandwidth utilization.
+	/**
+	 * CodeFire Load Balancer PHP Class Component
+	 * 
+	 * @author Tyler Montgomery and Randy Hoover
+	 */
+	
+	/** Webservice daemon hostname.
+	 * This should be localhost under most cases. Running the service on a remove machine will
+	 * skew the results and cause the load calculation to fail.
 	 */
 	const WEBSERVICE_HOST = "localhost";
+	
+	/** Webservice daemon port
+	 * Change this to the port that you are running the service on
+	 */
 	const WEBSERVICE_PORT = 44444;
 	
 	
@@ -24,7 +35,7 @@ class CFBalancerPHP {
 	 */
 	const WEBSERVICE_TIMEOUT = 1;
 	
-	/* Stores which array index contains the time since last check-in
+	/** Stores which array index contains the time since last check-in
 	 */
 	const WEBSERVICE_API_EXPIRE = 0;
 	
@@ -36,11 +47,11 @@ class CFBalancerPHP {
 	 */
 	const WEBSERVICE_API_CPULOAD = 2;
 	
-	/* Stores which array index contains the net load
+	/** Stores which array index contains the net load
 	 */
 	const WEBSERVICE_API_NETLOAD = 3;
 	
-	/* Stores which elements contains localhost signifier
+	/** Stores which elements contains localhost signifier
 	 */
 	const WEBSERVICE_API_LOCALHOST_REF = 4;
 	
@@ -72,18 +83,20 @@ class CFBalancerPHP {
 	/** This initializes the CFBalancerPHP class.
 	 */
 	public function __construct() {
-		// Initialize timer value here. This allows for 
+		// Initialize timer value here. This allows for us to keep track of the performance of the application and diagnose any hangs.
 		$this->timer = microtime(true);
 	}
 
 	/** Returns an array of each server in the CFBalancer pool.
-	 *	@return $nodeList contains the server's internal IP, it's public CNAME, it's CPU load average, and it's current outgoing network rate.
+	 *	@return string contains the server's internal IP, it's public CNAME, it's CPU load average, and it's current outgoing network rate.
 	 */
 	public function getNodeList() {
 		if ($this->dead) {
 			$this->debug(__FUNCTION__);
 			return null;
 		}
+		
+		$this->debug(__FUNCTION__ . " - Opening webservice.");
 		$handle = $this->openWebService();
 		$nodeListRaw = null;
 		
@@ -106,60 +119,62 @@ class CFBalancerPHP {
 
 	/** Allows us to access data returned as an array from a function.
 	 * This is a workaround for php5.3 limitation
-	 * @var $array The array to operate on
-	 * @var $key The key to return from $array
-	 * @return $value of $array at $key 
+	 * @param array $array The array to operate on
+	 * @param string $key The key to return from $array
+	 * @return string value of $array at $key 
 	 */
 	private function getArray(array $array, $key) {
 		return $arr[$key];
 	}
 
 	/** Processes the raw nodelist, into an array
-	 *  @param $raw The raw node list in text form
-	 * 	@return $nodeListArray
+	 * @param string $raw The raw node list in text form
+	 * @return array Array of nodes other than localhost 
 	 */
 	private function processNodeList($raw) {
-		//need to add error handing for null NodeList
+		//FIXME: need to add error handing for null NodeList
 		if ($raw != NULL && isset($raw) && !empty($raw)) {
 			$this->debug(__FUNCTION__ . " - Processing non-null nodeList.");
+			// break up the raw text into lines
 			$lines = explode("\r\n",$raw);
-			//breaks up raw data by the carriage returns into an array by lines
 			
 			foreach ($lines as $lines) {
+				// split the raw list into an array per the API specification
 				$node = explode(",",$lines);
+				
+				// check if the count of elements matches the signifier for localhost
 				if (count($node) == WEBSERVICE_API_LOCALHOST_REF) {
 					// stash local performance counter in dedicated variable
 					$localhost = $node;
 				}
+				
+				// store this non-localhost new node in the nodeList
 				array_push($nodeList, $node);
-
-				// then breaks up the line data into an array based on 
-				// the , we use to seperate data
 			}
 			return $nodeList;
 		}
 		else {
-			$this->debug(__FUNCTION___ . " ERROR: nodeList was null, empty, or not set.");
+			$this->debug(__FUNCTION___ . " failed, nodeList was null, empty, or not set.");
 			$this->dead = True;
 			return null;
 		}
 	}
 	
-	/** Checks the pool of servers, determines the most available node, and redirects the client to the new node/$postfix
-	 *	@param $postfix	The URL to append to the CNAME to redirect to.
+	/** Checks the pool of servers, determines the most available node, and redirects the client to the new node.
+	 *  Uses a "Location:" header to accomplish the transfer.
+	 *	@param string $postfix	The URL to append to the CNAME to redirect to.
 	 */
 	public function checkAndRedirect($postfix) {
 		if ($this->dead) {
 			$this->debug(__FUNCTION__);
 			return null;
 		}
-		
-		// blah blah blah
-		header("Location:");
+
+		header("Location: http://". $this->getRedirectNode() ."/".$postfix);
 	}
 	
 	/**	Performs the comparison of servers in the pool to determine the most available node in the pool.
-	 *	@return $redirCNAME the CNAME of the node that is most available
+	 *	@return string the CNAME of the node that is most available
 	 */
 	public function getRedirectNode() {
 		if ($this->dead) {
@@ -174,7 +189,7 @@ class CFBalancerPHP {
 
 	/**	Connects to the webservice port that CFBalancer exposes on localhost.
 	 *	After connecting to the webservice port, it returns a handle (fp) to that connection.
-	 *	@return $webserviceHandle
+	 *	@return resource a handle to the now-open webservice
 	 */
 	private function openWebservice() {
 		// open web service socket.
@@ -182,7 +197,7 @@ class CFBalancerPHP {
 
 		$fp = fsockopen(WEBSERVICE_HOST, WEBSERVICE_PORT);
 		if(!$fp) {
-			$this->debug(__FUCNTION__ . " failed, setting dead.");
+			$this->debug(__FUCNTION__ . " failed, unable to obtain a file pointer.");
 			$this->dead = True;
 		}
 		
@@ -190,7 +205,7 @@ class CFBalancerPHP {
 	}
 	
 	/** Saves debug text along with timing data to a buffer for recall with getDebug() later.
-	 *  @param $text The text to write to the debug buffer
+	 * @param string $text The text to write to the debug buffer
 	 */
 	private function debug($text) {
 		if ($this->dead) {
