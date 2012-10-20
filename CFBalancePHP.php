@@ -7,6 +7,24 @@ class CFBalancerPHP {
 	const WEBSERVICE_HOST = "localhost";
 	const WEBSERVICE_PORT = 44444;
 	
+	// Stores timeout for the webservice in seconds
+	const WEBSERVICE_TIMEOUT = 1;
+	
+	// Stores which array index contains the time since last check-in
+	const WEBSERVICE_API_EXPIRE = 0;
+	
+	// Stores which array index contains the host cname
+	const WEBSERVICE_API_CNAME = 1;
+	
+	// Stores which array index contains the cpu load
+	const WEBSERVICE_API_CPULOAD = 2;
+	
+	// Stores which array index contains the net load
+	const WEBSERVICE_API_NETLOAD = 3;
+	
+	// Stores which elements contains localhost signifier
+	const WEBSERVICE_API_LOCALHOST_REF = 4;
+	
 	// Stores the rolling debug log for timing purposes
 	private $debugLog;
 	
@@ -15,6 +33,9 @@ class CFBalancerPHP {
 	
 	// For performance-tracking
 	private $timer;
+	
+	// Stores the local node performance counters
+	private $localhost;
 		
 	/** This initializes the CFBalancerPHP class.
 	 *	We also initialize the $timer variable here as well so we can debug print every step of the way,
@@ -35,13 +56,8 @@ class CFBalancerPHP {
 		$handle = $this->openWebService();
 		$nodeListRaw = null;
 		
-		// FIXME: add timing code here as well to ensure that the socket never hangs for more than 15ms
-		// if it does hang, debug print, and mark us as dead, and return null.
-			
-		// Ask for webservice to list servers.
-		// need to set timeout then make
-		//  stream_set_timeout
-
+		stream_set_timeout($handle, WEBSERVICE_TIMEOUT);
+		
 		while (!$this->getArray(stream_get_meta_data($fp),"timed_out")) {
 			fwrite($handle, "L");
 			while (!feof($handle)) {
@@ -68,16 +84,23 @@ class CFBalancerPHP {
 	/** Processes the raw nodelist, into an array
 	 * 	@returns $nodeListArray
 	 */
-	public function processNodeList($raw) {
+	private function processNodeList($raw) {
 		//need to add error handing for null NodeList
 		if ($raw != NULL && isset($raw) && !empty($raw)) {
 			$this->debug(__FUNCTION__ . " - Processing non-null nodeList.");
 			$lines = explode("\r\n",$raw);
 			//breaks up raw data by the carriage returns into an array by lines
+			
 			foreach ($lines as $lines) {
-				array_push($nodeList, explode(",",$lines));
-				//then breaks up the line data into an array based on 
-				//the , we use to seperate data
+				$node = explode(",",$lines);
+				if (count($node) == WEBSERVICE_API_LOCALHOST_REF) {
+					// stash local performance counter in dedicated variable
+					$localhost = $node;
+				}
+				array_push($nodeList, $node);
+
+				// then breaks up the line data into an array based on 
+				// the , we use to seperate data
 			}
 			return $nodeList;
 		}
@@ -109,8 +132,9 @@ class CFBalancerPHP {
 			$this->debug(__FUNCTION__);
 			return null;
 		}
+		// FIXME still need to break up the nodes array into variables to calculate our values to do our math.
+		$nodes = $this->getNodeList();
 		
-		// blah blah blah
 		return $redirCNAME;
 	}
 
