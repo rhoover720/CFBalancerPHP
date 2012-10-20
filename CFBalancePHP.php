@@ -69,15 +69,23 @@ class CFBalancerPHP {
 	 */
 	public function processNodeList($raw) {
 		//need to add error handing for null NodeList
-		$lines = explode("\r\n",$raw);
-		//breaks up raw data by the carriage returns into an array by 
-		//lines
-		foreach ($lines as $lines) {
-			array_push($nodeList, explode(",",$lines));
-			//then breaks up the line data into an array based on 
-			//the , we use to seperate data
+		if ($raw != NULL) {
+			$this->debug("processing raw nodelist that's not null.");
+			$lines = explode("\r\n",$raw);
+			//breaks up raw data by the carriage returns into an array by 
+			//lines
+			foreach ($lines as $lines) {
+				array_push($nodeList, explode(",",$lines));
+				//then breaks up the line data into an array based on 
+				//the , we use to seperate data
+			}
+			return $nodeList;
 		}
-		return $nodeList;
+		else {
+			$this->debug(__FUNCTION___ . " died because of null NodeList.");
+			$dead = True;
+			return null;
+		}
 	}
 	
 	/** Checks the pool of servers, determines the most available node, and redirects the client to the new node/$postfix
