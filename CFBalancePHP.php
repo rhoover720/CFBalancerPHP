@@ -1,11 +1,13 @@
 <?php
-namespace CFBalancerPHP;
+namespace codefire;
+
+/**
+ * CodeFire Load Balancer PHP Class Component
+ * 
+ * @author Tyler Montgomery and Randy Hoover
+ */
 class CFBalancerPHP {
-	/**
-	 * CodeFire Load Balancer PHP Class Component
-	 * 
-	 * @author Tyler Montgomery and Randy Hoover
-	 */
+	
 	
 	/** Webservice daemon hostname.
 	 * This should be localhost under most cases. Running the service on a remove machine will
@@ -59,6 +61,21 @@ class CFBalancerPHP {
 	// END API CONFIG
 	//
 	
+	/** Multiplier (weight) to each CPU load index
+	 */
+	const CPU_LOAD_MULTIPLIER = 2.0;
+	
+	/** Multiplier (weight) to each net load index
+	 */
+	const NET_LOAD_MULTIPLIER = 1.0;
+	
+	/** Margin of error when comparing cpu loads
+	 */
+	const CPU_LOAD_MARGIN = 2.0;
+	
+	/** Margin of error when comparing network loads
+	 */
+	const NET_LOAD_MARGIN = 10.0;
 	
 	/** Stores the rolling debug log for timing purposes
 	 */
@@ -126,6 +143,17 @@ class CFBalancerPHP {
 	private function getArray(array $array, $key) {
 		return $arr[$key];
 	}
+	
+	/** Helper function for sorting the nodeLists
+	 * DEPRECATED!
+	 * @param array $a The first array to compare
+	 * @param array $b The second array to compare
+	 * @param int $key The key to compare both arrays by 
+	 */
+	function sortNodeList($a, $b, $key) {
+    	return $a[$key] - $b[$key];
+	}
+	
 
 	/** Processes the raw nodelist, into an array
 	 * @param string $raw The raw node list in text form
@@ -162,6 +190,7 @@ class CFBalancerPHP {
 	
 	/** Checks the pool of servers, determines the most available node, and redirects the client to the new node.
 	 *  Uses a "Location:" header to accomplish the transfer.
+	 *  @api
 	 *	@param string $postfix	The URL to append to the CNAME to redirect to.
 	 */
 	public function checkAndRedirect($postfix) {
@@ -174,6 +203,7 @@ class CFBalancerPHP {
 	}
 	
 	/**	Performs the comparison of servers in the pool to determine the most available node in the pool.
+	 * @api
 	 *	@return string the CNAME of the node that is most available
 	 */
 	public function getRedirectNode() {
@@ -183,6 +213,29 @@ class CFBalancerPHP {
 		}
 		// FIXME still need to break up the nodes array into variables to calculate our values to do our math.
 		$nodes = $this->getNodeList();
+		
+		// sort node list by expire time
+		usort($nodes, function($a, $b) {
+    		return $a[WEBSERVICE_API_EXPIRE] - $b[WEBSERVICE_API_EXPIRE];
+		});
+		
+		// now that we have sorted the array off of timeout, we need to assign a weighted sum of "usability" to each host.
+		$weights = array();
+		for ($index = 0;$index <= count($nodes); $index++) {
+			$weights[$index] = ($nodes[$index][WEBSERVICE_API_CPULOAD] * CPU_LOAD_MULTIPLIER) + ($nodes[$index][WEBSERVICE_API_NETLOAD] * NET_LOAD_MULTIPLIER) ;
+		}
+        
+        // let's do the same for localhost
+		$localhost_index = ($this->localhost[WEBSERVICE_API_CPULOAD] * CPU_LOAD_MULTIPLIER) + ($this->localhost[WEBSERVICE_API_NETLOAD] * NET_LOAD_MULTIPLIER);
+        
+        
+        
+		
+		/*$low_node = array_keys($nodes, min($nodes));
+		
+		if (($this->localhost - $low_node[WEBSERVICE_API_CPULOAD]) <= CPU_LOAD_MARGIN ){
+			
+		}*/
 		
 		return $redirCNAME;
 	}
