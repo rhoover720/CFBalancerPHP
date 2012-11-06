@@ -61,13 +61,33 @@ class CFBalancerPHP {
 	// END API CONFIG
 	//
 	
+	/** Percentage of net load to deem as high usage
+	 */
+	const HIGH_NET_LOAD_PERCENTAGE = 65.0;
+	
+	/** Percentage of CPU load to deem as high usage
+	 */
+	const HIGH_CPU_LOAD_PERCENTAGE = 75.0;
+	
 	/** Multiplier (weight) to each CPU load index
 	 */
 	const CPU_LOAD_MULTIPLIER = 2.0;
 	
 	/** Multiplier (weight) to each net load index
 	 */
-	const NET_LOAD_MULTIPLIER = 1.0;
+	const NET_LOAD_MULTIPLIER = 4.0;
+	
+	/** Multiplier (weight) for high CPU Load index
+	 */
+	const HIGH_CPU_LOAD_MULTIPLIER = 4.0;
+	
+	/** Discount (for lack of better terms) for net load less than cpu load.
+	 */
+	const DISCOUNT_NET_LOWER_CPU = 10.0;
+	
+	/** Discount (for lack of better terms) for net load less than high net laod.
+	 */
+	const DISCOUNT_LOW_NET_LOAD = 10.0;
 	
 	/** Margin of error when comparing cpu loads
 	 */
@@ -202,6 +222,35 @@ class CFBalancerPHP {
 		header("Location: http://". $this->getRedirectNode() ."/".$postfix);
 	}
 	
+	/** Calculates the discounts to take away from netload and overall weighted score
+	 * @api
+	 * @return int value of total discount to subtrace for weight score
+	 */
+	 private function getDiscounts($net_load,$cpu_load){
+	 	##FIXME
+	 	if ($net_load != NULL && $cpu_load != NULL) {
+	 		$this->debug(__FUNCTION__ . " - calculating weight discounts.");
+	 		if ($net_load <= HIGH_NET_LOAD_PERCENTAGE) {
+		 		$discount = DISCOUNT_LOW_NET_LOAD;
+	 		}
+			else {
+				$discount = 0;
+			}
+			if ($net_load <= $cpu_load){
+				$discount = $discount + DISCOUNT_NET_LOWER_CPU; 
+			}
+			else {
+				$discount = $discount + 0;
+			}
+			return $discount;
+		}
+		else {
+			$this->debug(__FUNCTION__ . " failed, net_load or cpu_load was empty.");
+			$this->dead = True;
+			return null;
+		}
+	 }
+	
 	/**	Performs the comparison of servers in the pool to determine the most available node in the pool.
 	 * @api
 	 *	@return string the CNAME of the node that is most available
@@ -219,18 +268,18 @@ class CFBalancerPHP {
     		return $a[WEBSERVICE_API_EXPIRE] - $b[WEBSERVICE_API_EXPIRE];
 		});
 		
+		$discounts = $get->getDiscounts($nodes[$index][WEBSERVICE_API_NETLOAD],$nodes[$index][WEBSERVICE_API_CPULOAD]);
+		
 		// now that we have sorted the array off of timeout, we need to assign a weighted sum of "usability" to each host.
 		$weights = array();
 		for ($index = 0;$index <= count($nodes); $index++) {
-			$weights[$index] = ($nodes[$index][WEBSERVICE_API_CPULOAD] * CPU_LOAD_MULTIPLIER) + ($nodes[$index][WEBSERVICE_API_NETLOAD] * NET_LOAD_MULTIPLIER) ;
+			$weights[$index] = ($nodes[$index][WEBSERVICE_API_CPULOAD] * CPU_LOAD_MULTIPLIER) + (($nodes[$index][WEBSERVICE_API_NETLOAD] * NET_LOAD_MULTIPLIER) - $discounts) ;
 		}
         
         // let's do the same for localhost
-		$localhost_index = ($this->localhost[WEBSERVICE_API_CPULOAD] * CPU_LOAD_MULTIPLIER) + ($this->localhost[WEBSERVICE_API_NETLOAD] * NET_LOAD_MULTIPLIER);
-        
-        
-        
-		
+		$localhost_index = ($this->localhost[WEBSERVICE_API_CPULOAD] * CPU_LOAD_MULTIPLIER) + (($this->localhost[WEBSERVICE_API_NETLOAD] * NET_LOAD_MULTIPLIER) - $discounts);
+
+
 		/*$low_node = array_keys($nodes, min($nodes));
 		
 		if (($this->localhost - $low_node[WEBSERVICE_API_CPULOAD]) <= CPU_LOAD_MARGIN ){
