@@ -224,7 +224,7 @@ class CFBalancerPHP {
 	
 	/** Calculates the discounts to take away from netload and overall weighted score
 	 * @api
-	 * @return int value of total discount to subtrace for weight score
+	 * @return int value of total discount to subtract for weight score
 	 */
 	 private function getDiscounts($net_load,$cpu_load){
 	 	##FIXME
@@ -250,6 +250,31 @@ class CFBalancerPHP {
 			return null;
 		}
 	 }
+	 
+	/** Determines which value will be used for CPU Multiplier based on cpu load
+	 * @api
+	 * @return int value for CPU Multiplier
+	 */
+	private function getCPUMultiplier($cpu_load){
+		if ($cpu_load != NULL && isset($cpu_load) && !empty($cpu_load)) {
+			$this->debug(__FUNCTION__ . " - calculating cpu multiplier.");
+			if ($cpu_load <= HIGH_CPU_LOAD_PERCENTAGE) {
+				##FIXME
+				$mult = CPU_LOAD_MULTIPLIER;
+				return $mult;
+			}
+			else {
+				$mult = HIGH_CPU_LOAD_MULTIPLIER;
+				return $mult;
+			}
+		}
+		else {
+			##FIXME
+			$this->debug(__FUNCTION__ . " failed, cpu_load was not set, or null");
+			$this->dead = True;
+			return null;
+		}
+	}
 	
 	/**	Performs the comparison of servers in the pool to determine the most available node in the pool.
 	 * @api
@@ -269,15 +294,17 @@ class CFBalancerPHP {
 		});
 		
 		$discounts = $get->getDiscounts($nodes[$index][WEBSERVICE_API_NETLOAD],$nodes[$index][WEBSERVICE_API_CPULOAD]);
+		$cpu_mult = $get->getCPUMultiplier($nodes[$index][WEBSERVICE_API_CPULOAD]);
 		
 		// now that we have sorted the array off of timeout, we need to assign a weighted sum of "usability" to each host.
 		$weights = array();
 		for ($index = 0;$index <= count($nodes); $index++) {
-			$weights[$index] = ($nodes[$index][WEBSERVICE_API_CPULOAD] * CPU_LOAD_MULTIPLIER) + (($nodes[$index][WEBSERVICE_API_NETLOAD] * NET_LOAD_MULTIPLIER) - $discounts) ;
+			$weights[$index] = ($nodes[$index][WEBSERVICE_API_CPULOAD] * $cpu_mult) + (($nodes[$index][WEBSERVICE_API_NETLOAD] * NET_LOAD_MULTIPLIER) - $discounts) ;
 		}
         
         // let's do the same for localhost
-		$localhost_index = ($this->localhost[WEBSERVICE_API_CPULOAD] * CPU_LOAD_MULTIPLIER) + (($this->localhost[WEBSERVICE_API_NETLOAD] * NET_LOAD_MULTIPLIER) - $discounts);
+        $localhost_cpu_mult = $get->getCPUMultiplier($this->localhost[WEBSERVICE_API_CPULOAD]);
+		$localhost_index = ($this->localhost[WEBSERVICE_API_CPULOAD] * $localhost_cpu_mult) + (($this->localhost[WEBSERVICE_API_NETLOAD] * NET_LOAD_MULTIPLIER) - $discounts);
 
 
 		/*$low_node = array_keys($nodes, min($nodes));
